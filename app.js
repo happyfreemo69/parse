@@ -1,5 +1,6 @@
 var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
+var reqLogger = require('nodelibs/')['Mdw/reqLogger'];
 var app = express();
 var config = require('./config');
 var api = new ParseServer({
@@ -8,7 +9,10 @@ var api = new ParseServer({
   masterKey: config.masterKey, // Keep this key secret!
   serverURL: 'http://localhost:1337/parse' // Don't forget to change to https if needed
 });
-
+app.use(reqLogger(config));
+app.get('/ping', function(req,res){
+    return res.status(200).end();
+})
 // Serve the Parse API on the /parse URL prefix
 app.use('/parse', api);
 
