@@ -3,18 +3,21 @@ var ParseServer = require('parse-server').ParseServer;
 var reqLogger = require('nodelibs/')['Mdw/reqLogger'];
 var app = express();
 var config = require('./config');
-var api = new ParseServer({
-  databaseURI: config.mongoUrl,
-  appId: config.appId,
-  masterKey: config.masterKey, // Keep this key secret!
-  serverURL: 'http://localhost:1337/parse' // Don't forget to change to https if needed
-});
+
 app.use(reqLogger(config));
-app.get('/ping', function(req,res){
-    return res.status(200).end();
+
+['dev', 'uat', 'prd'].forEach(function(x){
+  var api = new ParseServer({
+    databaseURI:  config[x+'_mongoUrl'],
+    appId:        config[x+'_appId'],
+    masterKey:    config[x+'_masterKey'], // Keep this key secret!
+    serverURL:    'http://localhost:1337/'+x // Don't forget to change to https if needed
+  });
+  app.get('/'+x+'/ping', function(req,res){
+      return res.status(200).end();
+  })
+  app.use('/'+x, api);
 })
-// Serve the Parse API on the /parse URL prefix
-app.use('/parse', api);
 
 
 if(config.https){
