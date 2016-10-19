@@ -1,0 +1,26 @@
+{
+    "name": "notif",
+    "version": "1.0.0",
+    "description": "notif",
+    "author": "mpech",
+    "dependencies": {
+        "express": "4.14.0",
+        "body-parser": "1.15.2",
+        "method-override":"2.3.1",
+        "forever":"0.13.0",
+        "express-domain-middleware":"0.1.0",
+        "request": "2.53.0",
+        "nodelibs": "1.6.9",
+        "compression":"1.5.2",
+        "parse-server":"2.2.22"
+    },
+    "devDependencies": {
+        "mocha": "^1.21.4",
+        "supertest":  "~0.14.0"
+    },
+    "scripts":{
+        "preinstall":"./config/deploy/fetchunpublished.js happyfreemo69/nodelibs"
+    },
+    "private":true,
+    "license": "MIT"
+}
