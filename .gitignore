@@ -2,3 +2,4 @@ node_modules
 config/privateConfig.js
 config/server.crt
 config/server.key
+config/*p12

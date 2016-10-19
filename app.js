@@ -7,12 +7,30 @@ var config = require('./config');
 app.use(reqLogger(config));
 
 ['dev', 'uat', 'prd'].forEach(function(x){
-  var api = new ParseServer({
+  var u = {
     databaseURI:  config[x+'_mongoUrl'],
     appId:        config[x+'_appId'],
     masterKey:    config[x+'_masterKey'], // Keep this key secret!
-    serverURL:    'http://localhost:1337/'+x // Don't forget to change to https if needed
-  });
+    serverURL:    'http://localhost:1337/'+x, // Don't forget to change to https if needed
+    push: {
+      android: {
+        senderId: config[x+'_android_senderId'],
+        apiKey: config[x+'_android_javascriptKey']
+      },
+      ios: ['dev','prd'].reduce(function(acc, env){
+        if(config[x+'_ios_'+env+'_pfx']){
+          acc.push({
+            pfx: config[x+'_ios_'+env+'_pfx'],
+            bundleId: config[x+'_ios_bundleId'],
+            production: env=='prd'
+          })
+        }
+        return acc;
+      },[])
+    }
+  }
+
+  var api = new ParseServer(u);
   app.get('/'+x+'/ping', function(req,res){
       return res.status(200).end();
   })
