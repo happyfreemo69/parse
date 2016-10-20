@@ -2,10 +2,11 @@ var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var reqLogger = require('nodelibs/')['Mdw/reqLogger'];
 var app = express();
+var bodyParser = require('body-parser');
 var config = require('./config');
 
 app.use(reqLogger(config));
-
+app.use('/:type(dev|uat|prd)/push', bodyParser.text()); //do not apply for everything otherwise breaks the dashboard
 ['dev', 'uat', 'prd'].forEach(function(x){
   var u = {
     databaseURI:  config[x+'_mongoUrl'],
