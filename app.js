@@ -5,8 +5,9 @@ var app = express();
 var bodyParser = require('body-parser');
 var config = require('./config');
 
-app.use(reqLogger(config));
+
 app.use('/:type(dev|uat|prd)/push', bodyParser.text()); //do not apply for everything otherwise breaks the dashboard
+app.use(reqLogger(config));
 ['dev', 'uat', 'prd'].forEach(function(x){
   var u = {
     databaseURI:  config[x+'_mongoUrl'],
