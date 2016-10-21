@@ -7,6 +7,14 @@ var config = require('./config');
 
 
 app.use('/:type(dev|uat|prd)/push', bodyParser.text()); //do not apply for everything otherwise breaks the dashboard
+app.use('/:type(dev|uat|prd)/push', function(req, res, next){
+  try{
+  req.body = JSON.parse(req.body);
+  }catch(e){
+    return next(e);
+  }
+  return next();
+});
 app.use(reqLogger(config));
 ['dev', 'uat', 'prd'].forEach(function(x){
   var u = {
