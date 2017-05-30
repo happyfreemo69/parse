@@ -1,15 +1,17 @@
 var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var reqLogger = require('nodelibs/')['Mdw/reqLogger'];
+var AppStarter = require('./lib/appStarter');
 var app = express();
 var bodyParser = require('body-parser');
 var config = require('./config');
-
+app.config = config;
+var appStarter = AppStarter(app, config);
 
 app.use('/:type(dev|uat|prd)/push', bodyParser.text()); //do not apply for everything otherwise breaks the dashboard
 app.use('/:type(dev|uat|prd)/push', function(req, res, next){
   try{
-  req.body = JSON.parse(req.body);
+    req.body = JSON.parse(req.body);
   }catch(e){
     return next(e);
   }
@@ -44,21 +46,27 @@ app.use(reqLogger(config));
   app.get('/'+x+'/ping', function(req,res){
       return res.status(200).end();
   })
-  app.use('/'+x, api);
+  app.use('/'+x, function(req,res,next){
+    //take care of lang, version
+    return api(req,res,next)
+  });
 })
 
-
-if(config.https){
-    var fs = require('fs');
-    var privateKey = fs.readFileSync(__dirname+'/config/server.key');
-    var certificate = fs.readFileSync(__dirname+'/config/server.crt');
-
-    var credentials = {key: privateKey, cert: certificate};
-    var httpsServer = require('https').createServer(credentials, app);
-    httpsServer.listen(config.httpsPort, function(){
-        console.info('https on '+config.httpsPort);
+if(!module.parent){
+    appStarter.start();
+    var onDeath = function(signal, e){
+        console.log('crashed ('+signal+'):',new Date());
+        if(e){
+            console.log('e : ', e, e && e.stack);
+        }
+        return process.exit(1);
+    }
+    process.on('uncaughtException', function(err) {
+        console.log('process.on handler');
+        console.log(new Date, err);
     });
+    process.on('exit', onDeath.bind(null, 'exit'));
+    require('death')({debug: true, uncaughtException: true})(onDeath);
+}else{
+  module.exports = app;
 }
-app.listen(config.httpPort, function() {
-  console.info('http on '+config.httpPort);
-});
