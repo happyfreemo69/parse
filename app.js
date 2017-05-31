@@ -7,16 +7,8 @@ var bodyParser = require('body-parser');
 var config = require('./config');
 app.config = config;
 var appStarter = AppStarter(app, config);
+var PushNotifier = require('./lib/pushNotifier');
 
-app.use('/:type(dev|uat|prd)/push', bodyParser.text()); //do not apply for everything otherwise breaks the dashboard
-app.use('/:type(dev|uat|prd)/push', function(req, res, next){
-  try{
-    req.body = JSON.parse(req.body);
-  }catch(e){
-    return next(e);
-  }
-  return next();
-});
 app.use(reqLogger(config));
 ['dev', 'uat', 'prd'].forEach(function(x){
   var u = {
@@ -41,15 +33,40 @@ app.use(reqLogger(config));
       },[])
     }
   }
+  var pn = new PushNotifier({endpoint:config.push_endpoint.replace('%',x)});
+  app['server_'+x] = new ParseServer(u);
 
-  var api = new ParseServer(u);
-  app.get('/'+x+'/ping', function(req,res){
-      return res.status(200).end();
-  })
-  app.use('/'+x, function(req,res,next){
-    //take care of lang, version
-    return api(req,res,next)
+  app.use('/'+x+'/push', bodyParser.text()); //do not apply for everything otherwise breaks the dashboard
+  app.use('/'+x+'/push', function(req, res, next){
+    try{
+      req.body = JSON.parse(req.body);
+    }catch(e){
+      return next(e);
+    }
+    return next();
   });
+  app.use(pn.endpoint, bodyParser.text());
+  app.use(pn.endpoint, function(req,res,next){
+    req.body = JSON.parse(req.body);
+    return next();
+  });
+  
+  app.post('/'+x+'/push', function(req, res, next){
+    var displayVariables = req.body.displayVariables;
+    return pn.sendNotifications(req.body).then(function(){
+      res.end();
+    }).catch(e=>{
+      config.logger.inf('failed to send ', e);
+      res.end('e:'+e);
+    })
+  })
+  /* this route is not meant to be known */
+  app.post(pn.endpoint, function(req,res,next){
+    req.url = '/push';
+    return app['server_'+x](req,res,next);
+  });
+  app.get('/'+x+'/ping', (req,res)=>res.status(200).end());
+  app.use('/'+x, app['server_'+x]);
 })
 
 if(!module.parent){

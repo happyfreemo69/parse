@@ -14,6 +14,8 @@ exports.debug = true;
 exports.phase = 'usr';
 exports.mode = ['dev','prod'][1];
 exports.hostname = require('os').hostname();
+exports.push_endpoint = '/inner%/push';
+exports.parse_pri_host = '127.0.0.1';
 exports.hot = {
     compression_enable:true,
     sendMails : exports.mode === 'prod',

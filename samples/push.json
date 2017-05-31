@@ -1,0 +1,52 @@
+{
+ "where": {
+  "$or": [
+   {
+    "userId": {
+     "$in": [
+      "592581ed754a1b0d120518a7"
+     ]
+    }
+   },
+   {
+    "user": {
+     "$in": [
+      "lele@fr.fr"
+     ]
+    }
+   }
+  ],
+  "deviceType": {
+   "$in": [
+    "android",
+    "ios"
+   ]
+  }
+ },
+ "data": {
+  "alert": {
+   "loc-key": "NEW_ISSUE",
+   "loc-args": [
+    "",
+    "John DOE"
+   ]
+  },
+  "data": {
+   "id": "592d711e76af56180f942973",
+   "createdAt": 1496150302339,
+   "message": "NEW_ISSUE",
+   "resourceCaption": "",
+   "senderId": "58d4de97191ab337845e65c9",
+   "senderCaption": "John DOE",
+   "isRead": false,
+   "links": {
+    "self": "https://synty-api-dev.citylity.com/v1/me/notifications?scopedNotificationId=592d711e76af56180f942973",
+    "issue": "https://synty-api-dev.citylity.com/v1/issues/592d711e76af56180f942961"
+   }
+  }
+ },
+ "_ApplicationId": "Xe2KZ2QFNCgSkFIhXea5nTYz5sjtuYuZ943EXSmT",
+ "_ClientVersion": "js1.9.2",
+ "_MasterKey": "ACdqLxKapuYmc6F28qHYxxz5ShoUXGHbAV3DOiaS",
+ "_InstallationId": "63b43fad-456e-037b-30fc-02f26496d6d9"
+}
