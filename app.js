@@ -33,7 +33,11 @@ app.use(reqLogger(config));
       },[])
     }
   }
-  var pn = new PushNotifier({endpoint:config.push_endpoint.replace('%',x)});
+  var pn = new PushNotifier({
+    endpoint:config.push_endpoint.replace('%',x), 
+    notif_withDisplay_android:config.notif_withDisplay_android, 
+    notif_withDisplay_ios:config.notif_withDisplay_ios
+  });
   app['server_'+x] = new ParseServer(u);
 
   app.use('/'+x+'/push', bodyParser.text()); //do not apply for everything otherwise breaks the dashboard
@@ -52,7 +56,6 @@ app.use(reqLogger(config));
   });
   
   app.post('/'+x+'/push', function(req, res, next){
-    var displayVariables = req.body.displayVariables;
     return pn.sendNotifications(req.body).then(function(){
       res.end();
     }).catch(e=>{

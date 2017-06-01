@@ -30,6 +30,8 @@ exports.hot = {
     winston_pptOnError:true,
     winston_enable: exports.phase != 'usr',
 };
+exports.notif_withDisplay_android = '4.1.8';
+exports.notif_withDisplay_ios = '401001003';
 exports.parse = {
     application_id: "Xe2KZ2QFNCgSkFIhXea5nTYz5sjtuYuZ943EXSmT",
     javascript_key: "WuTl7JWodREaHN92YhvvVL7dAQ9jtEKdyqNFQkEk"

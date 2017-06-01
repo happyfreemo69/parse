@@ -11,6 +11,7 @@
         "express-domain-middleware":"0.1.0",
         "request": "2.53.0",
         "nodelibs": "1.9.19",
+        "trad-cli": "1.0.0",
         "compression":"1.5.2",
         "parse-server":"2.2.22",
         "death":"1.1.0"
@@ -20,7 +21,7 @@
         "supertest":  "3.0.0"
     },
     "scripts":{
-        "preinstall":"./config/deploy/fetchunpublished.js happyfreemo69/nodelibs"
+        "preinstall":"./config/deploy/fetchunpublished.js happyfreemo69/nodelibs happyfreemo69/trad-cli"
     },
     "private":true,
     "license": "MIT"
