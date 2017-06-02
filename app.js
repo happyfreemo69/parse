@@ -34,12 +34,16 @@ app.use(reqLogger(config));
     }
   }
   var pn = new PushNotifier({
-    endpoint:config.push_endpoint.replace('%',x), 
+    endpoint:config.push_endpoint.replace('%',x),
+    trad_fname:config.trad_fname.replace('{{phase}}',x), 
     notif_withDisplay_android:config.notif_withDisplay_android, 
     notif_withDisplay_ios:config.notif_withDisplay_ios
   });
+  app['pn_'+x] = pn;
   app['server_'+x] = new ParseServer(u);
-
+  app.get('/'+x+'/_tradreloads', function(req,res,next){
+    return res.end(pn.version());
+  });
   app.use('/'+x+'/push', bodyParser.text()); //do not apply for everything otherwise breaks the dashboard
   app.use('/'+x+'/push', function(req, res, next){
     try{

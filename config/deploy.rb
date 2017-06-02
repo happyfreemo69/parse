@@ -10,7 +10,10 @@ set :log_level, :debug
 set :node_env, (fetch(:node_env) || fetch(:stage))
 
 set :linked_files, %w{config/privateConfig.js config/server.key config/server.crt config/ios_dev_dev.p12 config/ios_prd_prd.p12 config/ios_uat_dev.p12 config/ios_uat_prd.p12}
-set :linked_dirs, %w{log node_modules}
+#assumes we won't make binary breaks in config/trads
+#should we, do NOT share the trads to enable a backup
+#let as is for conveniance
+set :linked_dirs, %w{log node_modules config/trads}
 # Default value for default_env is {}
 set :default_env, { node_env: fetch(:node_env) }
 

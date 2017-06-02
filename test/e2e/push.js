@@ -7,7 +7,6 @@ var Mocker = require('nodelibs').Mocker;
 var jsonPush = require('../../samples/push.json');
 var trad = require('trad-cli');
 var parse = require('../../externalCalls/parse');
-var PushNotifier = require('../../lib/pushNotifier');
 describe('e2e push', function(){
     before(utils.waitUntilAppReady.bind(null, app));
 
@@ -19,17 +18,11 @@ describe('e2e push', function(){
             fwding = true;
             return res.end();
         })
-        mokr.mock(trad, 'getLanguages', ()=>{
-            return ['fr'];
-        })
-        mokr.mock(trad, 'translate', ()=>{
-            return 'ok';
-        })
-        mokr.mock(PushNotifier.prototype, 'oldVersions', ()=>{
+        mokr.mock(app.pn_dev, 'oldVersions', ()=>{
             oldCalled = true;
             return Promise.resolve();
         })
-        mokr.mock(PushNotifier.prototype, 'withDisplayVersions', ()=>{
+        mokr.mock(app.pn_dev, 'withDisplayVersions', ()=>{
             displayCalled = true;
             return Promise.resolve();
         })
@@ -49,18 +42,21 @@ describe('e2e push', function(){
         var oldCalled = false;
         var displayCalled = false;
         var sendPushCalled = false;
+
         mokr.mock(trad, 'getLanguages', ()=>{
             return ['fr','en'];
         });
         var inst = null;
         var expects = {'fr':1, 'en':1}
-        mokr.mock(trad, 'translate', (key, lang, data)=>{
+
+        mokr.mock(app.pn_dev.trad, 'getLanguages', ()=>['fr','en'])
+        mokr.mock(app.pn_dev.trad, 'translate', function(key, lang, data){
             assert.equal(key, 'max');
             expects[lang]--;
             assert.equal(data.displayKey, 'max');
             return lang;
         })
-        mokr.mock(PushNotifier.prototype, 'oldVersions', ()=>{
+        mokr.mock(app.pn_dev, 'oldVersions', ()=>{
             oldCalled = true;
             return Promise.resolve();
         })
@@ -68,6 +64,7 @@ describe('e2e push', function(){
             sendPushCalled = true;
             assert(body != inst);
             inst = body;
+            return Promise.resolve();
         });
         var tmp = JSON.parse(JSON.stringify(jsonPush));
         tmp.data.data.displayKey = 'max';
