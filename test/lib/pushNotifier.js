@@ -23,7 +23,7 @@ describe('e2e push', function(){
             return 'translate'+lang;
         })
         var expects = {
-            '{"$or":[{"deviceType":"android","appVersion":{"gte":"4.1.8"}},{"deviceType":"ios","appVersion":{"gte":"401001003"}}]}':['fr','en'].length,
+            '{"$or":[{"deviceType":"android","appVersion":{"gte":"4.1.8"}},{"deviceType":"ios","appVersion":{"gte":"401001003"}},{"$or":[{"userId":{"$in":["592581ed754a1b0d120518a7"]}},{"user":{"$in":["lele@fr.fr"]}}]}]}':['fr','en'].length,
         }
         var langs = {translatefr:1, translateen:1};
         mokr.mock(parse, 'sendPush', function(body){
