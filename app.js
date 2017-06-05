@@ -10,7 +10,7 @@ var appStarter = AppStarter(app, config);
 var PushNotifier = require('./lib/pushNotifier');
 
 app.use(reqLogger(config));
-['dev', 'uat', 'prd'].forEach(function(x){
+config.phases.forEach(function(x){
   var u = {
     databaseURI:  config[x+'_mongoUrl'],
     appId:        config[x+'_appId'],

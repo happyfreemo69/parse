@@ -12,6 +12,7 @@ exports.port = 4004;
 exports.httpsPort = 4009;
 exports.debug = true;
 exports.phase = 'usr';
+exports.phases = ['usr'];
 exports.mode = ['dev','prod'][1];
 exports.hostname = require('os').hostname();
 exports.push_endpoint = '/inner%/push';
@@ -28,7 +29,7 @@ exports.hot = {
     winston_hostname: "NOHOST",
     winston_slackUrl:'override me, private webhook url',
     winston_pptOnError:true,
-    winston_enable: exports.phase != 'usr',
+    winston_enable: false,
 };
 exports.notif_withDisplay_android = '4.1.8';
 exports.notif_withDisplay_ios = '401001003';
