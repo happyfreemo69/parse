@@ -10,71 +10,61 @@ var appStarter = AppStarter(app, config);
 var PushNotifier = require('./lib/pushNotifier');
 
 app.use(reqLogger(config));
-config.phases.forEach(function(x){
-  var u = {
-    databaseURI:  config[x+'_mongoUrl'],
-    appId:        config[x+'_appId'],
-    masterKey:    config[x+'_masterKey'], // Keep this key secret!
-    serverURL:    'http://localhost:1337/'+x, // Don't forget to change to https if needed
-    push: {
-      android: {
-        senderId: config[x+'_android_senderId'],
-        apiKey: config[x+'_android_javascriptKey']
-      },
-      ios: ['dev','prd'].reduce(function(acc, env){
-        if(config[x+'_ios_'+env+'_pfx']){
-          acc.push({
-            pfx: config[x+'_ios_'+env+'_pfx'],
-            bundleId: config[x+'_ios_bundleId'],
-            production: env=='prd'
-          })
-        }
-        return acc;
-      },[])
-    }
+var pn = new PushNotifier({
+  endpoint:config.push_endpoint,
+  trad_fname:config.trad_fname, 
+  notif_withDisplay_android:config.notif_withDisplay_android, 
+  notif_withDisplay_ios:config.notif_withDisplay_ios
+});
+app['pn'] = pn;
+app['server'] = new ParseServer({
+  databaseURI:  config['parse_mongoUrl'],
+  appId:        config['parse_appId'],
+  masterKey:    config['parse_masterKey'], // Keep this key secret!
+  serverURL:    'http://localhost:1337/parse', // Don't forget to change to https if needed
+  push: {
+    android: {
+      senderId: config['parse_android_senderId'],
+      apiKey: config['parse_android_javascriptKey']
+    },
+    ios: ['dev','prd'].reduce(function(acc, env){
+      if(config['parse_ios_'+env+'_pfx']){
+        acc.push({
+          pfx: config['parse_ios_'+env+'_pfx'],
+          bundleId: config['parse_ios_bundleId'],
+          production: env=='prd'
+        })
+      }
+      return acc;
+    },[])
   }
-  var pn = new PushNotifier({
-    endpoint:config.push_endpoint.replace('%',x),
-    trad_fname:config.trad_fname.replace('{{phase}}',x), 
-    notif_withDisplay_android:config.notif_withDisplay_android, 
-    notif_withDisplay_ios:config.notif_withDisplay_ios
-  });
-  app['pn_'+x] = pn;
-  app['server_'+x] = new ParseServer(u);
-  app.get('/'+x+'/_tradreloads', function(req,res,next){
-    return res.end(pn.version());
-  });
-  app.use('/'+x+'/push', bodyParser.text()); //do not apply for everything otherwise breaks the dashboard
-  app.use('/'+x+'/push', function(req, res, next){
-    try{
-      req.body = JSON.parse(req.body);
-    }catch(e){
-      return next(e);
-    }
-    return next();
-  });
-  app.use(pn.endpoint, bodyParser.text());
-  app.use(pn.endpoint, function(req,res,next){
+});
+app.use('/parse/push', bodyParser.text()); //do not apply for everything otherwise breaks the dashboard
+app.use('/parse/push', function(req, res, next){
+  try{
     req.body = JSON.parse(req.body);
-    return next();
-  });
-  
-  app.post('/'+x+'/push', function(req, res, next){
-    return pn.sendNotifications(req.body).then(function(){
-      res.end();
-    }).catch(e=>{
-      config.logger.inf('failed to send ', e);
-      res.end('e:'+e);
-    })
+  }catch(e){
+    return next(e);
+  }
+  return next();
+});
+app.use(pn.endpoint, bodyParser.json());
+
+app.post('/parse/push', function(req, res, next){
+  return pn.sendNotifications(req.body).then(function(){
+    res.end();
+  }).catch(e=>{
+    config.logger.inf('failed to send ', e);
+    res.end('e:'+e);
   })
-  /* this route is not meant to be known */
-  app.post(pn.endpoint, function(req,res,next){
-    req.url = '/push';
-    return app['server_'+x](req,res,next);
-  });
-  app.get('/'+x+'/ping', (req,res)=>res.status(200).end());
-  app.use('/'+x, app['server_'+x]);
 })
+/* this route is not meant to be known */
+app.post(pn.endpoint, function(req,res,next){
+  req.url = '/push';
+  return app['server'](req,res,next);
+});
+app.get('/ping', (req,res)=>res.status(200).end());
+app.use('/parse', app['server']);
 
 if(!module.parent){
     appStarter.start();

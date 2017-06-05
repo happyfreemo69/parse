@@ -14,20 +14,20 @@ describe('e2e push', function(){
         var fwding = false;
         var oldCalled = false;
         var displayCalled = false;
-        mokr.mock(app, 'server_dev', function(req,res,next){
+        mokr.mock(app, 'server', function(req,res,next){
             fwding = true;
             return res.end();
         })
-        mokr.mock(app.pn_dev, 'oldVersions', ()=>{
+        mokr.mock(app.pn, 'oldVersions', ()=>{
             oldCalled = true;
             return Promise.resolve();
         })
-        mokr.mock(app.pn_dev, 'withDisplayVersions', ()=>{
+        mokr.mock(app.pn, 'withDisplayVersions', ()=>{
             displayCalled = true;
             return Promise.resolve();
         })
         return requester
-            .post('/dev/push')
+            .post('/parse/push')
             .send(JSON.stringify(jsonPush))
             .set({'Content-Type':'text/plain'})
             .expect(200)
@@ -49,14 +49,14 @@ describe('e2e push', function(){
         var inst = null;
         var expects = {'fr':1, 'en':1}
 
-        mokr.mock(app.pn_dev.trad, 'getLanguages', ()=>['fr','en'])
-        mokr.mock(app.pn_dev.trad, 'translate', function(key, lang, data){
+        mokr.mock(app.pn.trad, 'getLanguages', ()=>['fr','en'])
+        mokr.mock(app.pn.trad, 'translate', function(key, lang, data){
             assert.equal(key, 'max');
             expects[lang]--;
             assert.equal(data.displayKey, 'max');
             return lang;
         })
-        mokr.mock(app.pn_dev, 'oldVersions', ()=>{
+        mokr.mock(app.pn, 'oldVersions', ()=>{
             oldCalled = true;
             return Promise.resolve();
         })
@@ -69,7 +69,7 @@ describe('e2e push', function(){
         var tmp = JSON.parse(JSON.stringify(jsonPush));
         tmp.data.data.displayKey = 'max';
         return requester
-            .post('/dev/push')
+            .post('/parse/push')
             .send(JSON.stringify(tmp))
             .set({'Content-Type':'text/plain'})
             .expect(200)
