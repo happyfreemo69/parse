@@ -4,3 +4,4 @@ config/server.crt
 config/server.key
 config/*p12
 *txt
+*gz

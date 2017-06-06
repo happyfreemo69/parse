@@ -49,10 +49,14 @@ var toJsonBody = function(req, res, next){
 }
 app.use('/parse/push', bodyParser.text()); //do not apply for everything otherwise breaks the dashboard
 app.use('/parse/push', toJsonBody);
+
+app.use('/synty/push', bodyParser.text());
+app.use('/synty/push', toJsonBody);
+
 app.use(pn.endpoint, bodyParser.text());//be identical to public
 app.use(pn.endpoint, toJsonBody);
 
-app.post('/parse/push', function(req, res, next){
+app.post('/synty/push', function(req, res, next){
   return pn.sendNotifications(req.body).then(function(){
     res.end();
   }).catch(e=>{
@@ -60,9 +64,11 @@ app.post('/parse/push', function(req, res, next){
     res.end('e:'+e);
   })
 })
+
 /* this route is not meant to be known */
 app.post(pn.endpoint, function(req,res,next){
   req.url = '/push';
+  config.logger.dbg('sent '+JSON.stringify(req.body));
   return app['server'](req,res,next);
 });
 app.get('/parse/ping', (req,res)=>res.status(200).end());//differentiate from dashboard

@@ -27,7 +27,7 @@ describe('e2e push', function(){
             return Promise.resolve();
         })
         return requester
-            .post('/parse/push')
+            .post('/synty/push')
             .send(JSON.stringify(jsonPush))
             .set({'Content-Type':'text/plain'})
             .expect(200)
@@ -69,7 +69,7 @@ describe('e2e push', function(){
         var tmp = JSON.parse(JSON.stringify(jsonPush));
         tmp.data.data.displayKey = 'max';
         return requester
-            .post('/parse/push')
+            .post('/synty/push')
             .send(JSON.stringify(tmp))
             .set({'Content-Type':'text/plain'})
             .expect(200)
