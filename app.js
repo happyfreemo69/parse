@@ -65,7 +65,7 @@ app.post(pn.endpoint, function(req,res,next){
   req.url = '/push';
   return app['server'](req,res,next);
 });
-app.get('/ping', (req,res)=>res.status(200).end());
+app.get('/parse/ping', (req,res)=>res.status(200).end());//differentiate from dashboard
 app.use('/parse', app['server']);
 
 if(!module.parent){
