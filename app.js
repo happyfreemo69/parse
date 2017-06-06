@@ -39,16 +39,18 @@ app['server'] = new ParseServer({
     },[])
   }
 });
-app.use('/parse/push', bodyParser.text()); //do not apply for everything otherwise breaks the dashboard
-app.use('/parse/push', function(req, res, next){
+var toJsonBody = function(req, res, next){
   try{
     req.body = JSON.parse(req.body);
   }catch(e){
     return next(e);
   }
   return next();
-});
-app.use(pn.endpoint, bodyParser.json());
+}
+app.use('/parse/push', bodyParser.text()); //do not apply for everything otherwise breaks the dashboard
+app.use('/parse/push', toJsonBody);
+app.use(pn.endpoint, bodyParser.text());//be identical to public
+app.use(pn.endpoint, toJsonBody);
 
 app.post('/parse/push', function(req, res, next){
   return pn.sendNotifications(req.body).then(function(){
