@@ -20,7 +20,7 @@ exports.parse_pri_host = '127.0.0.1';
 exports.hot = {
     compression_enable:true,
     sendMails : exports.mode === 'prod',
-    logLvl: exports.mode === 'prod',
+    logLvl: 0,
     logToConsole: false,
     logMaxFileSize:5000000,
     logLineMaxSize: exports.mode == 'prod'?4096:4000000,
