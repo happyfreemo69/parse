@@ -57,6 +57,7 @@ app.use(pn.endpoint, bodyParser.text());//be identical to public
 app.use(pn.endpoint, toJsonBody);
 
 app.post('/synty/push', function(req, res, next){
+  config.logger.dbg('incoming synty ', req.body);
   return pn.sendNotifications(req.body).then(function(){
     res.end();
   }).catch(e=>{
