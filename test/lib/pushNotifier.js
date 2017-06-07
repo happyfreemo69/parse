@@ -9,7 +9,7 @@ var trad = require('trad-cli');
 var parse = require('../../externalCalls/parse');
 var PushNotifier = require('../../lib/pushNotifier');
 var jsonPush = require('../../samples/push.json');
-describe('e2e push', function(){
+describe('lib pushNotifier', function(){
     before(utils.waitUntilAppReady.bind(null, app));
 
     it('replaces alert obj with str', Mocker.mockIt(function(mokr){
@@ -23,7 +23,7 @@ describe('e2e push', function(){
             return 'translate'+lang;
         })
         var expects = {
-            '{"$or":[{"deviceType":"android","appVersion":{"gte":"4.1.8"}},{"deviceType":"ios","appVersion":{"gte":"401001003"}},{"$or":[{"userId":{"$in":["592581ed754a1b0d120518a7"]}},{"user":{"$in":["lele@fr.fr"]}}]}]}':['fr','en'].length,
+            '{"$or":[{"deviceType":"android","appVersion":{"$gte":"4.1.8"}},{"deviceType":"ios","appVersion":{"$gte":"401001003"}},{"$or":[{"userId":{"$in":["592581ed754a1b0d120518a7"]}},{"user":{"$in":["lele@fr.fr"]}}]}]}':['fr','en'].length,
         }
         var langs = {translatefr:1, translateen:1};
         mokr.mock(parse, 'sendPush', function(body){
