@@ -22,19 +22,33 @@ describe('lib pushNotifier', function(){
         mokr.mock(pn.trad, 'translate', function(key, lang, data){
             return 'translate'+lang;
         })
-        var expects = {
-            '{"$or":[{"deviceType":"android","appVersion":{"$gte":"4.1.8"}},{"deviceType":"ios","appVersion":{"$gte":"401001003"}},{"$or":[{"userId":{"$in":["592581ed754a1b0d120518a7"]}},{"user":{"$in":["lele@fr.fr"]}}]}]}':['fr','en'].length,
-        }
         var langs = {translatefr:1, translateen:1};
         mokr.mock(parse, 'sendPush', function(body){
-            expects[JSON.stringify(body.where)]--;
             langs[body.data.alert]--;
         })
         return pn.withDisplayVersions(jsonPush).then(function(){
-            assert.equal(Object.keys(expects).length, 1);
-            assert.equal(expects[Object.keys(expects)[0]], 0, 'called twice');
             assert.equal(Object.keys(langs).length, 2);
             assert(Object.keys(langs).every(x=>langs[x]===0), 'alert is now directly a string');
         })
+    }));
+    it('_patchPayload with existing $or', Mocker.mockIt(function(mokr){
+        mokr.mock(config, 'endpoint', 'dum');
+        mokr.mock(config, 'trad_fname', config.trad_fname.replace('{{phase}}','dev'));
+        var pn = new PushNotifier(config);
+        var payload = {where:{$or:[{a:1},{b:1}]}};
+        pn._patchPayload(payload);
+        assert.equal(Object.keys(payload.where).length,1);
+        var str = '[{"a":1,"$or":[{"deviceType":"android","appVersion":{"$gte":"4.1.8"}},{"deviceType":"ios","appVersion":{"$gte":"401001003"}}]},{"b":1,"$or":[{"deviceType":"android","appVersion":{"$gte":"4.1.8"}},{"deviceType":"ios","appVersion":{"$gte":"401001003"}}]}]';
+        assert.equal(JSON.stringify(payload.where.$or), str);
+    }));
+    it('_patchPayload if no $or', Mocker.mockIt(function(mokr){
+        mokr.mock(config, 'endpoint', 'dum');
+        mokr.mock(config, 'trad_fname', config.trad_fname.replace('{{phase}}','dev'));
+        var pn = new PushNotifier(config);
+        var payload = {where:{}};
+        pn._patchPayload(payload);
+        assert.equal(Object.keys(payload.where).length,1);
+        var str = '[{"deviceType":"android","appVersion":{"$gte":"4.1.8"}},{"deviceType":"ios","appVersion":{"$gte":"401001003"}}]'
+        assert.equal(JSON.stringify(payload.where.$or), str);
     }));
 });

@@ -5,3 +5,4 @@ config/server.key
 config/*p12
 *txt
 *gz
+logs
