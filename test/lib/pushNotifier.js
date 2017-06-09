@@ -31,6 +31,7 @@ describe('lib pushNotifier', function(){
             assert(Object.keys(langs).every(x=>langs[x]===0), 'alert is now directly a string');
         })
     }));
+
     it('_patchPayload with existing $or', Mocker.mockIt(function(mokr){
         mokr.mock(config, 'endpoint', 'dum');
         mokr.mock(config, 'trad_fname', config.trad_fname.replace('{{phase}}','dev'));
@@ -41,6 +42,7 @@ describe('lib pushNotifier', function(){
         var str = '[{"a":1,"$or":[{"deviceType":"android","appVersion":{"$gte":"4.1.8"}},{"deviceType":"ios","appVersion":{"$gte":"401001003"}}]},{"b":1,"$or":[{"deviceType":"android","appVersion":{"$gte":"4.1.8"}},{"deviceType":"ios","appVersion":{"$gte":"401001003"}}]}]';
         assert.equal(JSON.stringify(payload.where.$or), str);
     }));
+
     it('_patchPayload if no $or', Mocker.mockIt(function(mokr){
         mokr.mock(config, 'endpoint', 'dum');
         mokr.mock(config, 'trad_fname', config.trad_fname.replace('{{phase}}','dev'));
@@ -50,5 +52,24 @@ describe('lib pushNotifier', function(){
         assert.equal(Object.keys(payload.where).length,1);
         var str = '[{"deviceType":"android","appVersion":{"$gte":"4.1.8"}},{"deviceType":"ios","appVersion":{"$gte":"401001003"}}]'
         assert.equal(JSON.stringify(payload.where.$or), str);
+    }))
+
+    it('withDisplayVersions without translation still sends a notif', Mocker.mockIt(function(mokr){
+        mokr.mock(config, 'endpoint', 'dum');
+
+        mokr.mock(config, 'trad_fname', config.trad_fname.replace('{{phase}}','dev'));
+        var pn = new PushNotifier(config);
+
+        mokr.mock(pn.trad, 'getLanguages', ()=>[])
+        var o = JSON.parse(JSON.stringify(jsonPush));
+        o.data.data.displayKey = 'test';
+        var called = false;
+        mokr.mock(parse, 'sendPush', function(body){
+            assert.equal(body.data.alert, 'test');
+            called = true;
+        })
+        return pn.withDisplayVersions(o).then(function(){
+            assert(called);
+        })
     }));
 });
