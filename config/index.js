@@ -37,7 +37,6 @@ exports.parse = {
     application_id: "Xe2KZ2QFNCgSkFIhXea5nTYz5sjtuYuZ943EXSmT",
     javascript_key: "WuTl7JWodREaHN92YhvvVL7dAQ9jtEKdyqNFQkEk"
 }
-exports.trad_fname = __dirname+'/trads/dic.jsonl';
 var fs = require('fs');
 var res = fs.existsSync(__dirname+'/privateConfig.js') && require('./privateConfig.js');
 for(var i in res){

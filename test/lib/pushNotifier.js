@@ -14,8 +14,6 @@ describe('lib pushNotifier', function(){
 
     it('replaces alert obj with str', Mocker.mockIt(function(mokr){
         mokr.mock(config, 'endpoint', 'dum');
-
-        mokr.mock(config, 'trad_fname', config.trad_fname.replace('{{phase}}','dev'));
         var pn = new PushNotifier(config);
 
         mokr.mock(pn.trad, 'getLanguages', ()=>['fr','en'])
@@ -34,7 +32,6 @@ describe('lib pushNotifier', function(){
 
     it('_patchPayload with existing $or', Mocker.mockIt(function(mokr){
         mokr.mock(config, 'endpoint', 'dum');
-        mokr.mock(config, 'trad_fname', config.trad_fname.replace('{{phase}}','dev'));
         var pn = new PushNotifier(config);
         var payload = {where:{$or:[{a:1},{b:1}]}};
         pn._patchPayload(payload);
@@ -45,7 +42,6 @@ describe('lib pushNotifier', function(){
 
     it('_patchPayload if no $or', Mocker.mockIt(function(mokr){
         mokr.mock(config, 'endpoint', 'dum');
-        mokr.mock(config, 'trad_fname', config.trad_fname.replace('{{phase}}','dev'));
         var pn = new PushNotifier(config);
         var payload = {where:{}};
         pn._patchPayload(payload);
@@ -57,7 +53,6 @@ describe('lib pushNotifier', function(){
     it('withDisplayVersions without translation still sends a notif', Mocker.mockIt(function(mokr){
         mokr.mock(config, 'endpoint', 'dum');
 
-        mokr.mock(config, 'trad_fname', config.trad_fname.replace('{{phase}}','dev'));
         var pn = new PushNotifier(config);
 
         mokr.mock(pn.trad, 'getLanguages', ()=>[])
