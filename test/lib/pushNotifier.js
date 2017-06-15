@@ -67,4 +67,22 @@ describe('lib pushNotifier', function(){
             assert(called);
         })
     }));
+
+    it('patches lang en', Mocker.mockIt(function(mokr){
+        mokr.mock(config, 'endpoint', 'dum');
+        var pn = new PushNotifier(config);
+        var payload = {where:{}};
+        pn._setLang(payload, 'en');
+        assert.equal(Object.keys(payload.where).length,1);
+        assert.equal(payload.where.localeIdentifier.$regex, '^(?!fr-|de-)')
+    }));
+
+    it('patches lang fr', Mocker.mockIt(function(mokr){
+        mokr.mock(config, 'endpoint', 'dum');
+        var pn = new PushNotifier(config);
+        var payload = {where:{}};
+        pn._setLang(payload, 'fr');
+        assert.equal(Object.keys(payload.where).length,1);
+        assert.equal(payload.where.localeIdentifier.$regex, '^fr-')
+    }));
 });
