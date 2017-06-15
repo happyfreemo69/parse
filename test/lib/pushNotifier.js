@@ -36,7 +36,17 @@ describe('lib pushNotifier', function(){
         var payload = {where:{$or:[{a:1},{b:1}]}};
         pn._patchPayload(payload);
         assert.equal(Object.keys(payload.where).length,1);
-        var str = '[{"a":1,"$or":[{"deviceType":"android","appVersion":{"$gte":"4.1.8"}},{"deviceType":"ios","appVersion":{"$gte":"401001003"}}]},{"b":1,"$or":[{"deviceType":"android","appVersion":{"$gte":"4.1.8"}},{"deviceType":"ios","appVersion":{"$gte":"401001003"}}]}]';
+        var str = '[{"a":1,"$or":[{"deviceType":"android","appVersion":{"$gte":"4.1.8"}},{"deviceType":"ios","appVersion":{"$gte":"402000002"}}]},{"b":1,"$or":[{"deviceType":"android","appVersion":{"$gte":"4.1.8"}},{"deviceType":"ios","appVersion":{"$gte":"402000002"}}]}]';
+        assert.equal(JSON.stringify(payload.where.$or), str);
+    }));
+
+    it('oldVersions filters out ios if wrong key', Mocker.mockIt(function(mokr){
+        mokr.mock(config, 'endpoint', 'dum');
+        var pn = new PushNotifier(config);
+        var payload = {where:{$or:[{a:1},{b:1}]}, data:{data:{displayKey:'NEW_VOTE_CITY'}}};
+        pn._patchPayload(payload, true);
+        assert.equal(Object.keys(payload.where).length,1);
+        var str = '[{"a":1,"$or":[{"deviceType":"android","appVersion":{"$lt":"4.1.8"}}]},{"b":1,"$or":[{"deviceType":"android","appVersion":{"$lt":"4.1.8"}}]}]'
         assert.equal(JSON.stringify(payload.where.$or), str);
     }));
 
@@ -46,7 +56,7 @@ describe('lib pushNotifier', function(){
         var payload = {where:{}};
         pn._patchPayload(payload);
         assert.equal(Object.keys(payload.where).length,1);
-        var str = '[{"deviceType":"android","appVersion":{"$gte":"4.1.8"}},{"deviceType":"ios","appVersion":{"$gte":"401001003"}}]'
+        var str = '[{"deviceType":"android","appVersion":{"$gte":"4.1.8"}},{"deviceType":"ios","appVersion":{"$gte":"402000002"}}]'
         assert.equal(JSON.stringify(payload.where.$or), str);
     }))
 
