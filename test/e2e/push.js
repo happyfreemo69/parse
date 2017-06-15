@@ -50,10 +50,10 @@ describe('e2e push', function(){
         var expects = {'fr':1, 'en':1}
 
         mokr.mock(app.pn.trad, 'getLanguages', ()=>['fr','en'])
-        mokr.mock(app.pn.trad, 'translate', function(key, lang, data){
-            assert.equal(key, 'max');
+        mokr.mock(app.pn.trad, 'translate', function(key, lang, displayData){
+            assert.equal(key, 'NEW_USER');
             expects[lang]--;
-            assert.equal(data.displayKey, 'max');
+            assert.equal(displayData.username, 'bob');
             return lang;
         })
         mokr.mock(app.pn, 'oldVersions', ()=>{
@@ -67,7 +67,8 @@ describe('e2e push', function(){
             return Promise.resolve();
         });
         var tmp = JSON.parse(JSON.stringify(jsonPush));
-        tmp.data.data.displayKey = 'max';
+        tmp.data.data.displayKey = 'NEW_USER';
+        tmp.data.data.displayData = {username:'bob'};
         return requester
             .post('/synty/push')
             .send(JSON.stringify(tmp))
