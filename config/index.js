@@ -43,5 +43,7 @@ for(var i in res){
     exports[i] = res[i];//warn of embedded object
 }
 
+exports.hot.logUserIds = false;
+
 exports.hot.winston_slackPptDownMessage = exports.phase+' - '+exports.hot.winston_hostname+':papertrails is down (%date%)';
 exports.logger = new Logger({path: __dirname+'/../log/'}, exports.hot);

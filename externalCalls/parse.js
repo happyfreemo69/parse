@@ -8,6 +8,13 @@ var ctxHeaders = require('nodelibs')['network/headers']
 
  */
 exports.sendPush = function(body, endpoint){
+    if(config.hot.logUserIds && body.where && body.where.$or){
+        body.where.$or.forEach(function(identifier){
+            if(identifier.userId){
+                console.log("Sending to userIds:",identifier.userId);
+            }
+        });
+    }
     return new Promise(function(resolve, reject){
         var data = JSON.stringify(body);
         var headers = ctxHeaders.mergeIn({
