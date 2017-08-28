@@ -20,7 +20,7 @@ describe('e2e push', function(){
         })
         mokr.mock(app.pn, 'oldVersions', ()=>{
             oldCalled = true;
-            return Promise.resolve();
+            return Promise.resolve({"result":true});
         })
         mokr.mock(app.pn, 'withDisplayVersions', ()=>{
             displayCalled = true;
@@ -35,6 +35,7 @@ describe('e2e push', function(){
             assert(!fwding, 'no need for forwarding');
             assert(oldCalled, 'old mobiles should be called');
             assert(!displayCalled, 'display should not be called');
+            assert.equal(res.text, '[{"result":true}]')
         })
     }));
 

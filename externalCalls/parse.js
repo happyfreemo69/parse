@@ -28,13 +28,22 @@ exports.sendPush = function(body, endpoint){
             port:config.port,
             headers:headers
         }, function(res){
+            var buf = '';
             res.on('data', function(chunk){
                 if(res.statusCode != 200){
                     config.logger.inf('failed', chunk && chunk.toString());
                     return reject('fail :'+res.statusCode);
                 }
-                return resolve();
+                buf += chunk.toString();
             });
+            res.on('end', function(){
+                try{
+                    return resolve(JSON.parse(buf));
+                }catch(e){
+                    return reject(e);
+                }
+                return resolve(buf);
+            })
         });
         req.on('error', reject);
         req.write(data);

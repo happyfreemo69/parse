@@ -58,11 +58,12 @@ app.use(pn.endpoint, toJsonBody);
 
 app.post('/synty/push', function(req, res, next){
   config.logger.dbg('incoming synty ', req.body);
-  return pn.sendNotifications(req.body).then(function(){
-    res.end();
+  return pn.sendNotifications(req.body).then(function(innerPushStatuses){
+    var s = JSON.stringify([].concat(innerPushStatuses));
+    return res.end(s);
   }).catch(e=>{
     config.logger.inf('failed to send ', e);
-    res.end('e:'+e);
+    return res.end('e:'+e);
   })
 })
 
