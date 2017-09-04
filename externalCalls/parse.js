@@ -8,7 +8,7 @@ var ctxHeaders = require('nodelibs')['network/headers']
 
  */
 exports.sendPush = function(body, endpoint){
-    if(config.hot.logUserIds && body.where && body.where.$or){
+    if(config.parse_logUserIds && body.where && body.where.$or){
         body.where.$or.forEach(function(identifier){
             if(identifier.userId){
                 console.log("Sending to userIds:",identifier.userId);
