@@ -1,10 +1,10 @@
 var express = require('express');
+var config = require('./config');
 var ParseServer = require('parse-server').ParseServer;
 var reqLogger = require('nodelibs/')['Mdw/reqLogger'];
 var AppStarter = require('./lib/appStarter');
 var app = express();
 var bodyParser = require('body-parser');
-var config = require('./config');
 app.config = config;
 var appStarter = AppStarter(app, config);
 var PushNotifier = require('./lib/pushNotifier');

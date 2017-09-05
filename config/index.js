@@ -37,13 +37,14 @@ exports.parse = {
     application_id: "Xe2KZ2QFNCgSkFIhXea5nTYz5sjtuYuZ943EXSmT",
     javascript_key: "WuTl7JWodREaHN92YhvvVL7dAQ9jtEKdyqNFQkEk"
 }
+
+exports.parse_logUserIds = false;
+
 var fs = require('fs');
 var res = fs.existsSync(__dirname+'/privateConfig.js') && require('./privateConfig.js');
 for(var i in res){
     exports[i] = res[i];//warn of embedded object
 }
-
-exports.parse_logUserIds = false;
 
 exports.hot.winston_slackPptDownMessage = exports.phase+' - '+exports.hot.winston_hostname+':papertrails is down (%date%)';
 exports.logger = new Logger({path: __dirname+'/../log/'}, exports.hot);
