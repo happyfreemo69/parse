@@ -4,26 +4,26 @@
     "description": "notif",
     "author": "mpech",
     "dependencies": {
-        "express": "4.14.0",
         "body-parser": "1.15.2",
-        "method-override":"2.3.1",
-        "forever":"0.13.0",
-        "express-domain-middleware":"0.1.0",
-        "request": "2.53.0",
+        "compression": "1.5.2",
+        "death": "1.1.0",
+        "express": "4.14.0",
+        "express-domain-middleware": "0.1.0",
+        "forever": "0.13.0",
+        "method-override": "2.3.1",
         "nodelibs": "1.9.19",
-        "trad-cli": "1.0.7",
-        "compression":"1.5.2",
-        "parse-server":"2.2.22",
-        "death":"1.1.0"
+        "parse-server": "2.2.22",
+        "request": "2.53.0",
+        "trad-cli": "github:happyfreemo69/trad-cli#v1.0.7"
     },
     "devDependencies": {
         "mocha": "^1.21.4",
-        "supertest":  "3.0.0",
-        "optimist":"0.6.1"
+        "supertest": "3.0.0",
+        "optimist": "0.6.1"
     },
-    "scripts":{
-        "preinstall":"./config/deploy/fetchunpublished.js happyfreemo69/nodelibs happyfreemo69/trad-cli"
+    "scripts": {
+        "preinstall": "./config/deploy/fetchunpublished.js happyfreemo69/nodelibs happyfreemo69/trad-cli"
     },
-    "private":true,
+    "private": true,
     "license": "MIT"
 }

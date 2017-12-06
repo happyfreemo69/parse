@@ -70,6 +70,7 @@ describe('lib pushNotifier', function(){
         o.data.data.displayKey = 'test';
         var called = false;
         mokr.mock(parse, 'sendPush', function(body){
+            assert.equal(body.data.data.lang, 'en');
             assert.equal(body.data.alert, 'test');
             called = true;
         })
