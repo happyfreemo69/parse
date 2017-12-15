@@ -8,14 +8,32 @@ var bodyParser = require('body-parser');
 app.config = config;
 var appStarter = AppStarter(app, config);
 var PushNotifier = require('./lib/pushNotifier');
+var context = require('nodelibs').context;
 
+var domainMdw = require('express-domain-middleware');
+var ctxMgr = require('nodelibs')['Mdw/contextManager']({logger:config.logger});
+app.use(domainMdw);
+app.use(ctxMgr);
+app.use(function(req, res, next){
+    context.set('x-forwarded-for',req.headers['x-forwarded-for']);
+    context.set('pfx',req.headers.pfx);
+    context.set('tid',req.headers.tid);
+    context.set('sid',req.headers.sid);
+
+    context.set('x-parse-master-key',req.headers['x-parse-master-key']);
+    context.set('x-parse-application-id',req.headers['x-parse-application-id']);
+    return next();
+});
 app.use(reqLogger(config));
+
 var pn = new PushNotifier({
   endpoint:config.push_endpoint,
   trad_fname:config.trad_fname, 
   notif_withDisplay_android:config.notif_withDisplay_android, 
   notif_withDisplay_ios:config.notif_withDisplay_ios
 });
+
+var installationActivity = new (require('./activity/installationActivity'))(config.install_endpoint);
 app['pn'] = pn;
 app['server'] = new ParseServer({
   databaseURI:  config['parse_mongoUrl'],
@@ -67,12 +85,37 @@ app.post('/synty/push', function(req, res, next){
   })
 })
 
+app.delete('/synty/users/:userId', function(req,res,next){
+  config.logger.dbg('incoming synty ', req.body);
+  var userId = req.params.userId;
+  if(!req.params.userId){
+    return next('missing userId'+userId)
+  }
+  return installationActivity.remove(userId).then(function(ok){
+    return res.end(ok);
+  }).catch(e=>{
+    config.logger.inf('failed to send ', e);
+    return res.end('e:'+e);
+  })
+})
 /* this route is not meant to be known */
 app.post(pn.endpoint, function(req,res,next){
   req.url = '/push';
   config.logger.dbg('sent '+JSON.stringify(req.body));
   return app['server'](req,res,next);
 });
+/* this route is not meant to be known */
+app.get(installationActivity.endpoint, function(req,res,next){
+  req.url = '/installations';
+  config.logger.dbg('sent '+JSON.stringify(req.body));
+  return app['server'](req,res,next);
+});
+app.delete(installationActivity.endpoint+'/:installId', function(req,res,next){
+  req.url = '/installations/'+req.params.installId;
+  config.logger.dbg('sent '+req.params.installId);
+  return app['server'](req,res,next);
+});
+
 app.get('/parse/ping', (req,res)=>res.status(200).end());//differentiate from dashboard
 app.use('/parse', app['server']);
 

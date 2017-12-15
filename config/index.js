@@ -16,6 +16,7 @@ exports.phases = ['usr'];
 exports.mode = ['dev','prod'][1];
 exports.hostname = require('os').hostname();
 exports.push_endpoint = '/inner%/push';
+exports.install_endpoint = '/inner%/install';
 exports.parse_pri_host = '127.0.0.1';
 exports.enable_langInPayload = true;
 exports.hot = {

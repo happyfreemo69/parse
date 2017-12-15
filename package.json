@@ -11,18 +11,15 @@
         "express-domain-middleware": "0.1.0",
         "forever": "0.13.0",
         "method-override": "2.3.1",
-        "nodelibs": "1.9.19",
+        "nodelibs": "github:happyfreemo69/nodelibs#v1.10.1",
         "parse-server": "2.2.22",
         "request": "2.53.0",
-        "trad-cli": "github:happyfreemo69/trad-cli#v1.0.7"
+        "trad-cli": "github:happyfreemo69/trad-cli#v1.1.0"
     },
     "devDependencies": {
         "mocha": "^1.21.4",
         "supertest": "3.0.0",
         "optimist": "0.6.1"
-    },
-    "scripts": {
-        "preinstall": "./config/deploy/fetchunpublished.js happyfreemo69/nodelibs happyfreemo69/trad-cli"
     },
     "private": true,
     "license": "MIT"
