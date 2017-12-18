@@ -19,6 +19,7 @@ exports.push_endpoint = '/inner%/push';
 exports.install_endpoint = '/inner%/install';
 exports.parse_pri_host = '127.0.0.1';
 exports.enable_langInPayload = true;
+exports.loco_notifNs = 'TRADCLINS_';
 exports.hot = {
     compression_enable:true,
     sendMails : exports.mode === 'prod',

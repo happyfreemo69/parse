@@ -12,6 +12,47 @@ var jsonPush = require('../../samples/push.json');
 describe('lib pushNotifier', function(){
     before(utils.waitUntilAppReady.bind(null, app));
 
+    it('starts', Mocker.mockIt(function(mokr){
+        mokr.mock(config, 'endpoint', 'dum');
+        var pn = new PushNotifier(config);
+        return pn.trad.reload().then(x=>{
+            assert(pn.trad.hasKey('NOTIF_NEW_NOTE_CAMPUS', 'fr'));
+            assert(pn.trad.hasKey('LYYTI_STATE_ANSWERED', 'fr'));
+            assert(pn.trad.hasKey('LYYTI_STATE_CLOSED', 'fr'));
+            assert(pn.trad.hasKey('LYYTI_STATE_ONGOING', 'fr'));
+            assert(pn.trad.hasKey('LYYTI_STATE_OPENED', 'fr'));
+            assert(pn.trad.hasKey('LYYTI_STATE_READ', 'fr'));
+            assert(pn.trad.hasKey('LYYTI_STATE_RESOLVED', 'fr'));
+            assert(pn.trad.hasKey('LYYTI_STATE_STANDBY', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_LYYTI_FOLLOWED_COMMENT', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_LYYTI_STATUS_CHANGED', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_MGR_ANSWER', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_MGR_ANSWER_PRIVATE_LYYTI', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_MODERATED_LYYTI', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_COMMENT', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_DOCUMENT_BUILDING', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_DOCUMENT_CAMPUS', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_DOCUMENT_CITY', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_DOCUMENT_FLAT', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_FLAT_ISSUE', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_ISSUE_BUILDING', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_MESSAGE', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_MESSAGE_ON_LYYTI', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_NOTE_BUILDING', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_NOTE_CAMPUS', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_NOTE_CITY', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_NOTE_FLAT', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_OFFER_BUILDING', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_TOPIC_BUILDING', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_USER_BUILDING', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_VOTE_CITY', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_WORK_BUILDING', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_WORK_CAMPUS', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_WORK_CITY', 'fr'));
+            assert(pn.trad.hasKey('NOTIF_NEW_WORK_FLAT', 'fr'));
+        })
+    }));
+
     it('replaces alert obj with str', Mocker.mockIt(function(mokr){
         mokr.mock(config, 'endpoint', 'dum');
         var pn = new PushNotifier(config);
