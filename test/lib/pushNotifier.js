@@ -8,7 +8,6 @@ var jsonPush = require('../../samples/push.json');
 var trad = require('trad-cli');
 var parse = require('../../externalCalls/parse');
 var PushNotifier = require('../../lib/pushNotifier');
-var jsonPush = require('../../samples/push.json');
 describe('lib pushNotifier', function(){
     before(utils.waitUntilAppReady.bind(null, app));
 
@@ -50,6 +49,15 @@ describe('lib pushNotifier', function(){
             assert(pn.trad.hasKey('NOTIF_NEW_WORK_CAMPUS', 'fr'));
             assert(pn.trad.hasKey('NOTIF_NEW_WORK_CITY', 'fr'));
             assert(pn.trad.hasKey('NOTIF_NEW_WORK_FLAT', 'fr'));
+        })
+    }));
+
+    it('replaces states', Mocker.mockIt(function(mokr){
+        mokr.mock(config, 'endpoint', 'dum');
+        var pn = new PushNotifier(config);
+        return pn.trad.reload().then(_=>{
+            var x = pn.trad.translate('NOTIF_LYYTI_STATUS_CHANGED', 'fr', {"title":"test asset","state":"OPENED"});
+            assert.equal(x, 'Le statut de test asset est passé à Ouvert');
         })
     }));
 
