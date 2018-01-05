@@ -4,7 +4,7 @@ PARSE Docker image
 - To run, the image needs :
   - a ssh key provided as a id_rsa file
   - a privateConfig.js file, mounted at runtime (you can specify using volumes directives in a docker-compose.yml file). This file should be created
-  - A running accessible mongodb server
+  - A running and network accessible mongodb server
   - The environment variable PARSE_PORT should be set to the same port specified in privateConfig. You can do that in a makefile.
   
 Sample docker-compose.yml (in assetd parent directory)
