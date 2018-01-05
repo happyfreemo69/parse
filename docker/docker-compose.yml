@@ -1,0 +1,8 @@
+version: "2"
+services:
+  parse:
+    build: parse
+    ports:
+      - "127.0.0.1:$PARSE_PORT:$PARSE_PORT"
+    volumes:
+      - ./parse/privateConfig.js:/home/citylity/parse/config/privateConfig.js

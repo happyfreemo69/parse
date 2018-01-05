@@ -1,0 +1,9 @@
+# ignore ssh key
+id_rsa
+
+# ignore privateConfig
+privateConfig.js
+
+# ignore ssl certs
+*.key
+*.crt
