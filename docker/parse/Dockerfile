@@ -21,10 +21,13 @@ WORKDIR /home/citylity
 RUN mkdir .ssh
 COPY id_rsa /home/citylity/.ssh/id_rsa
 COPY config /home/citylity/.ssh/config
+COPY privateConfig.js /home/citylity/privateConfig.js
+RUN chown -R citylity:citylity /home/citylity/privateConfig.js
 RUN ssh-keyscan -t rsa github.com > /home/citylity/.ssh/known_hosts
 RUN chown -R citylity:citylity /home/citylity/.ssh
 USER citylity
 RUN git clone --verbose --progress git@github.com:happyfreemo69/parse.git
+RUN cp /home/citylity/privateConfig.js /home/citylity/parse/config/privateConfig.js
 WORKDIR parse
 COPY server.crt /home/citylity/parse/config/server.crt
 COPY server.key /home/citylity/parse/config/server.key
