@@ -89,16 +89,6 @@ describe('lib pushNotifier', function(){
         assert.equal(JSON.stringify(payload.where.$or), str);
     }));
 
-    it('oldVersions filters out ios if wrong key', Mocker.mockIt(function(mokr){
-        mokr.mock(config, 'endpoint', 'dum');
-        var pn = new PushNotifier(config);
-        var payload = {where:{$or:[{a:1},{b:1}]}, data:{data:{displayKey:'NEW_VOTE_CITY'}}};
-        pn._patchPayload(payload, true);
-        assert.equal(Object.keys(payload.where).length,1);
-        var str = '[{"a":1,"$or":[{"deviceType":"android","appVersion":"nothingtobematched"}]},{"b":1,"$or":[{"deviceType":"android","appVersion":"nothingtobematched"}]}]'
-        assert.equal(JSON.stringify(payload.where.$or), str);
-    }));
-
     it('_patchPayload if no $or', Mocker.mockIt(function(mokr){
         mokr.mock(config, 'endpoint', 'dum');
         var pn = new PushNotifier(config);

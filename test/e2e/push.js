@@ -10,37 +10,7 @@ var parse = require('../../externalCalls/parse');
 describe('e2e push', function(){
     before(utils.waitUntilAppReady.bind(null, app));
 
-    it('is synty backward compatible', Mocker.mockIt(function(mokr){
-        var fwding = false;
-        var oldCalled = false;
-        var displayCalled = false;
-        mokr.mock(app, 'server', function(req,res,next){
-            fwding = true;
-            return res.end();
-        })
-        mokr.mock(app.pn, 'oldVersions', ()=>{
-            oldCalled = true;
-            return Promise.resolve({"result":true});
-        })
-        mokr.mock(app.pn, 'withDisplayVersions', ()=>{
-            displayCalled = true;
-            return Promise.resolve();
-        })
-        return requester
-            .post('/synty/push')
-            .send(JSON.stringify(jsonPush))
-            .set({'Content-Type':'text/plain'})
-            .expect(200)
-        .then(function(res){
-            assert(!fwding, 'no need for forwarding');
-            assert(oldCalled, 'old mobiles should be called');
-            assert(!displayCalled, 'display should not be called');
-            assert.equal(res.text, '[{"result":true}]')
-        })
-    }));
-
     it('translates for every languages', Mocker.mockIt(function(mokr){
-        var oldCalled = false;
         var displayCalled = false;
         var sendPushCalled = false;
 
@@ -57,10 +27,6 @@ describe('e2e push', function(){
             assert.equal(displayData.username, 'bob');
             return lang;
         })
-        mokr.mock(app.pn, 'oldVersions', ()=>{
-            oldCalled = true;
-            return Promise.resolve();
-        })
         mokr.mock(parse, 'sendPush', (body, endpoint)=>{
             sendPushCalled = true;
             assert(body != inst);
@@ -76,7 +42,6 @@ describe('e2e push', function(){
             .set({'Content-Type':'text/plain'})
             .expect(200)
         .then(function(res){
-            assert(oldCalled, 'old mobiles should be called');
             assert(!displayCalled, 'display should not be called');
             assert(sendPushCalled);
             assert(Object.keys(expects).length, 0);
