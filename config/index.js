@@ -6,10 +6,8 @@ var Logger = require('nodelibs').Logger;
  * override this config in privateConfig.js for ... private details
  */
 exports = module.exports;
-exports.https = true;
 exports.http = true;
 exports.port = 4004;
-exports.httpsPort = 4009;
 exports.debug = true;
 exports.phase = 'usr';
 exports.phases = ['usr'];
