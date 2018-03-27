@@ -12,6 +12,8 @@ var context = require('nodelibs').context;
 
 var domainMdw = require('express-domain-middleware');
 var ctxMgr = require('nodelibs')['Mdw/contextManager']({logger:config.logger});
+var V = require('nodelibs').validator;
+var errorHandler = require('nodelibs').errorHandler;
 app.use(domainMdw);
 app.use(ctxMgr);
 app.use(function(req, res, next){
@@ -76,10 +78,21 @@ app.use(pn.endpoint, toJsonBody);
 
 app.post('/synty/push', function(req, res, next){
   config.logger.dbg('incoming synty ', req.body);
-  return pn.sendNotifications(req.body).then(function(innerPushStatuses){
-    var s = JSON.stringify([].concat(innerPushStatuses));
-    return res.end(s);
+  return V.validate({
+      where: V.sub({
+        $or:V.arr(V.sub(),1).req()
+      }).req(),
+  }, req.body).catch(e=>{
+    return errorHandler.invalidParameters(e)
+  }).then(_=>{
+    return pn.sendNotifications(req.body).then(function(innerPushStatuses){
+      var s = JSON.stringify([].concat(innerPushStatuses));
+      return res.end(s);
+    })
   }).catch(e=>{
+    if(e.id==4){
+      return res.status(e.statusCode).send(e);
+    }
     config.logger.inf('failed to send ', e);
     return res.end('e:'+e);
   })

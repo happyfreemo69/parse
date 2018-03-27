@@ -47,4 +47,32 @@ describe('e2e push', function(){
             assert(Object.keys(expects).length, 0);
         })
     }));
+
+    it('rejects if no matching criteria', Mocker.mockIt(function(mokr){
+        var tmp = JSON.parse(JSON.stringify(jsonPush));
+        delete tmp.where;
+        tmp.data.data.displayKey = 'NEW_USER';
+        tmp.data.data.displayData = {username:'bob'};
+        return requester
+            .post('/synty/push')
+            .send(JSON.stringify(tmp))
+            .set({'Content-Type':'text/plain'})
+            .expect(400)
+        .then(function(res){
+            assert.equal(res.body.error, 'INVALID_PARAMETERS');
+        })
+    }));
+
+    it('rejects if empty criteria', Mocker.mockIt(function(mokr){
+        var tmp = JSON.parse(JSON.stringify(jsonPush));
+        tmp.where.$or = [];
+        return requester
+            .post('/synty/push')
+            .send(JSON.stringify(tmp))
+            .set({'Content-Type':'text/plain'})
+            .expect(400)
+        .then(function(res){
+            assert.equal(res.body.error, 'INVALID_PARAMETERS');
+        })
+    }));
 });
