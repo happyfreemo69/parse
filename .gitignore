@@ -6,3 +6,4 @@ config/*p12
 *txt
 *gz
 logs
+.idea/
