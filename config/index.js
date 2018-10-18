@@ -6,6 +6,7 @@ var Logger = require('nodelibs').Logger;
  * override this config in privateConfig.js for ... private details
  */
 exports = module.exports;
+exports.serviceRoot = __dirname+'/../';
 exports.http = true;
 exports.port = 4004;
 exports.debug = true;
@@ -31,7 +32,7 @@ exports.hot = {};
 exports.parse_logUserIds = false;
 
 var fs = require('fs');
-var res = fs.existsSync(__dirname+'/privateConfig.js') && require('./privateConfig.js');
+var res = fs.existsSync(__dirname+'/privateConfig.json') && require('./privateConfig.json');
 Object.assign(exports, res);//no deep stuff
 Object.assign(exports, require('./urlDns'));
 

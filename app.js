@@ -9,6 +9,7 @@ app.config = config;
 var appStarter = AppStarter(app, config);
 var PushNotifier = require('./lib/pushNotifier');
 var context = require('nodelibs').context;
+var path = require('path')
 
 var domainMdw = require('express-domain-middleware');
 var ctxMgr = require('nodelibs')['Mdw/contextManager']({logger:config.logger});
@@ -50,7 +51,7 @@ app['server'] = new ParseServer({
     ios: ['dev','prd'].reduce(function(acc, env){
       if(config['parse_ios_'+env+'_pfx']){
         acc.push({
-          pfx: config['parse_ios_'+env+'_pfx'],
+          pfx: path.resolve(config.serviceRoot + config['rel_parse_ios_'+env+'_pfx']),
           bundleId: config['parse_ios_bundleId'],
           production: env=='prd'
         })
