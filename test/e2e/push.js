@@ -15,12 +15,12 @@ describe('e2e push', function(){
         var sendPushCalled = false;
 
         mokr.mock(trad, 'getLanguages', ()=>{
-            return ['fr','en'];
+            return ['fr','en', 'de', 'nl'];
         });
         var inst = null;
-        var expects = {'fr':1, 'en':1}
+        var expects = {'fr':1, 'en':1, 'de':1, 'nl':1}
 
-        mokr.mock(app.pn.trad, 'getLanguages', ()=>['fr','en'])
+        mokr.mock(app.pn.trad, 'getLanguages', ()=>['fr','en', 'de', 'nl'])
         mokr.mock(app.pn.trad, 'translate', function(key, lang, displayData){
             assert.equal(key, 'NEW_USER');
             expects[lang]--;

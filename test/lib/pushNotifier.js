@@ -124,7 +124,7 @@ describe('lib pushNotifier', function(){
         var payload = {where:{}};
         pn._setLang(payload, 'en');
         assert.equal(Object.keys(payload.where).length,1);
-        assert.equal(payload.where.localeIdentifier.$regex, '^(?!fr|de)')
+        assert.equal(payload.where.localeIdentifier.$regex, '^(?!fr|de|nl)')
     }));
 
     it('patches lang fr', Mocker.mockIt(function(mokr){
