@@ -52,4 +52,4 @@ lgsOptions.lgs_tickEvery = 1000;
 exports.logger = exports.http_logger == 0?
     new Logger({path: __dirname+'/../log/'}, lgsOptions): exports.http_logger == 1?
     new (Logger.http)({appName:exports.lgs_appName, host: exports.lgs_pri_host, port:exports.lgs_pri_port}, lgsOptions):
-    new (Logger.http2)({appName:exports.lgs_appName, host: exports.lgs_pri_host, port:exports.lgs_pri_port}, lgsOptions)
+    new (Logger.http2)({appName:exports.lgs_appName, host: exports.lgs_pri_host, port:exports.lgs_pri_port , upstream: exports.lgs_pri_host, protocol: exports.lgs_pri_protocol}, lgsOptions)
