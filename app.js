@@ -48,16 +48,15 @@ app['server'] = new ParseServer({
       senderId: config['parse_android_senderId'],
       apiKey: config['parse_android_javascriptKey']
     },
-    ios: ['dev','prd'].reduce(function(acc, env){
-      if(config['parse_ios_'+env+'_pfx']){
-        acc.push({
-          pfx: path.resolve(config.serviceRoot + config['rel_parse_ios_'+env+'_pfx']),
-          bundleId: config['parse_ios_bundleId'],
-          production: env=='prd'
-        })
-      }
-      return acc;
-    },[])
+    ios: {
+        token : {
+            key: path.resolve(config.serviceRoot + config['rel_parse_ios_p8']),
+            keyId: 'WSK7K88QTW',
+            teamId: '7A8MA56NRQ'
+        },
+        topic: config['parse_ios_bundleId'],
+        production: true
+    }
   }
 });
 var toJsonBody = function(req, res, next){
